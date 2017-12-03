@@ -27,7 +27,9 @@ Because you cannot directly access the master branch, so create your new branch 
 
 >Then you can do whatever you want. When done, do the following commands:
 >>git add .
+
 >>git commit -m "message about your addition to the code"
+
 >>git push
 
 Creates pull requests whenever your code is ready to merge.

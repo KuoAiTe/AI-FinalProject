@@ -1,0 +1,22 @@
+import math
+import random
+
+def sample(matrix):
+    K = 20      # number of clusters
+    L = K       # proportion = 1/L
+    S = 50      # at least S samples are chosen from each partition
+    C = 1       # chosen constant
+    PROPORTION = 0.9    # confidence level
+    num_sample = int(math.ceil(C*S*L*math.log10(K)))
+    # num_sample = 1
+    num_order = matrix.shape[0]
+    # num_order = 100
+    # m_sample_order = matrix.sample(n = 100)
+    v_sampleID = random.sample(range(0, num_order), 5)
+
+    m_sample = []
+    for i in range(0, len(v_sampleID)):
+        # m_sample_order.append(np.ndarray.tolist(m_order[i].toarray())[0])
+        m_sample.append(matrix[v_sampleID])
+    
+    return m_sample

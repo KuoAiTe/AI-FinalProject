@@ -1,13 +1,14 @@
 import math
 import random
 
-def sample(matrix):
-    K = 20      # number of clusters
-    L = K       # proportion = 1/L
-    S = 50      # at least S samples are chosen from each partition
-    C = 1       # chosen constant
-    PROPORTION = 0.9    # confidence level
-    num_sample = int(math.ceil(C*S*L*math.log10(K)))
+def sample(matrix, K, L, S, P):
+    # K = 20      # number of clusters
+    # L = K       # proportion = 1/L
+    # S = 50      # at least S samples are chosen from each partition
+    # # C = 1       # chosen constant
+    # P = 0.9    # confidence level
+    C = math.log(1/(1 - P), K)
+    num_sample = int(math.ceil(C*S*L*math.log(K)))
     # num_sample = 1
     num_order = matrix.shape[0]
     # num_order = 100

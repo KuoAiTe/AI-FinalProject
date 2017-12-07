@@ -19,18 +19,18 @@ def findNearCent(point, m_centroids):
         if minDist > calDistance(point, m_centroids[i]):
             minDist = calDistance(point, m_centroids[i])
             index = i
-    return i, minDist
+    return i
 
 def updateCentroids(m_orders, l_clusters):
     newCentroids = []
     length = len(m_orders[0])
     for i in range(len(l_clusters)):
-        tmp = []
+        tmp = np.array([])
         for j in range(len(l_clusters[i])):
-            tmp = tmp + m_orders[l_clusters[i][j]]
-        for  j in range(length):
-            tmp[j] = tmp[j] / length
-        newCentroids.append(tmp)
+            tmp += np.array(m_orders[l_clusters[i][j]])
+        for k in range(length):
+            tmp[k] /= len(l_clusters[i])
+        newCentroids.append(tmp.tolist())
     return newCentroids
 
 def refining(m_orders, l_clusters, m_centroids, minVolume):
@@ -40,14 +40,19 @@ def refining(m_orders, l_clusters, m_centroids, minVolume):
             if len(l_clusters[i]) >= minVolume + 1:
                 for j in range(len(l_clusters[i])):
                     pointIndex = l_clusters[i][j]
-                    bestIndex, bestDist = findNearCent(m_orders[pointIndex], m_centroids)
+                    bestIndex = findNearCent(m_orders[pointIndex], m_centroids)
                     if i != bestIndex:
                         l_clusters[i].remove(pointIndex)
                         l_clusters[bestIndex].append(pointIndex)
+                        j = j - 1
+                        if len(l_clusters[i]) <= minVolume:
+                            break
         
         newCentroids = updateCentroids(m_orders, l_clusters)
         if np.linalg.norm(m_centroids - newCentroids) <= epsilon:
             break
+        else:
+            m_centroids = newCentroids
 
     return l_clusters
 

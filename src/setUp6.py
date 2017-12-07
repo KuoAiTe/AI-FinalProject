@@ -37,7 +37,7 @@ for each in pointList:
     for key in each:
         if key != 'CustomerID':
             s = productStore[key][1] - 1
-            count[s-1] += each[key]
+            count[s] += each[key]
     newRow = count + location
     pointTopicList.append(newRow)
 

@@ -22,7 +22,6 @@ class kmeans():
         self.MaxIteration = 100
         self.dataSize = len(self.data)
         self.idx = np.zeros(self.dataSize, dtype = int)
-        self.clusters = []
         self.terminal = False
 
 
@@ -60,6 +59,7 @@ class kmeans():
             distortion += calDistance(self.data[i],self.centroids[self.idx[i]]) ** 2
         return distortion
 
+
     def assignCluster(self):
         for i in range(self.dataSize):
             min_distance = 99999
@@ -68,6 +68,7 @@ class kmeans():
                 if d < min_distance:
                     min_distance = d
                     self.idx[i] = k
+
 
     def solve(self):
         self.centroids = self.initCentroids()
@@ -78,6 +79,7 @@ class kmeans():
             if self.terminal == True:
                 break
         
+
     def getClusters(self):
         clusters = []
         for i in range(self.n_cluster):
@@ -85,6 +87,7 @@ class kmeans():
         for i in range(self.dataSize):
             clusters[self.idx[i]].append(i)
         return clusters
+
 
     def getCentroids(self):
         return self.centroids

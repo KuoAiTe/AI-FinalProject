@@ -2,6 +2,8 @@ import numpy as np
 import random
 from general import *
 
+epsilon = 0.001
+
 class kmeans():
     '''
     input:
@@ -21,6 +23,8 @@ class kmeans():
         self.dataSize = len(self.data)
         self.idx = np.zeros(self.dataSize, dtype = int)
         self.clusters = []
+        self.terminal = False
+
 
     def initCentroids(self):
         centroids = []
@@ -31,6 +35,7 @@ class kmeans():
             tmp[self.n_cluster - 1] = self.w_location[i][1]
             centroids.append(tmp)
         return centroids
+
 
     def updateCentroids(self):
         numCluster = np.zeros(self.n_cluster, dtype = int)
@@ -43,19 +48,23 @@ class kmeans():
             for j in range(self.n_feature):
                 sumCluster[i][j] /= numCluster[i]
         
-        self.centroids = sumCluster[i].tolist()
+        if np.linalg.norm(np.array(self.centroids) - sumCluster) <= epsilon:
+            self.terminal = True
+        
+        self.centroids = sumCluster.tolist()
+
 
     def obj(self):
         distortion = 0
         for i in range(self.dataSize):
-                distortion += calDistance(self.data[i],self.centroids[self.idx[i]]) ** 2
+            distortion += calDistance(self.data[i],self.centroids[self.idx[i]]) ** 2
         return distortion
 
     def assignCluster(self):
         for i in range(self.dataSize):
             min_distance = 99999
             for k in range(self.n_cluster):
-                d = calDistance(self.data[i],self.centroids[k])
+                d = calDistance(self.data[i], self.centroids[k])
                 if d < min_distance:
                     min_distance = d
                     self.idx[i] = k
@@ -65,7 +74,9 @@ class kmeans():
         for iteration in range(self.MaxIteration):
             self.assignCluster()
             self.updateCentroids()
-            print('distortion',self.obj())
+            print('distortion', self.obj())
+            if self.terminal == True:
+                break
         
     def getClusters(self):
         clusters = []

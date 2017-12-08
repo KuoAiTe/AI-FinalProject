@@ -64,13 +64,14 @@ class dataSet():
     def getOrder(self):
         return self.dataSet['m_order']
     def setup(self):
+        self.generateInvoiceList(numInvoice = self.numInvoice)
         self.generateCustomerLocation(customerSize = self.customerSize, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base, scale = 0.6)
         self.generateProductStorage(numItem = self.numItem,numStorage = self.numStorage)
-        self.generateInvoiceList(numInvoice = self.numInvoice)
-        self.generateDCLocation(numDC = self.numDC, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateStorageLocation(numStorage = self.numStorage, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
-        self.generateTopicList(numStorage = self.numStorage)
+        self.generateDCLocation(numDC = self.numDC, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateDistanceBetweenStorageAndDC(numDC = self.numDC,numStorage = self.numStorage)
+        self.generateTopicList(numStorage = self.numStorage)
+        self.generateNormalizedTopicList(numInvoice = self.numInvoice, numStorage = self.numStorage)
     def getCustomerLocation(self):
         '''
         return: <type 'numpy.ndarray'>
@@ -105,14 +106,21 @@ class dataSet():
         '''
         return: <type 'list'>
         '''
-        if self.Verbose: print('getTopicList',type(self.TopicList))
+        if self.Verbose: print('getTopicList()',type(self.TopicList))
         return self.TopicList
+    def getNormalizedTopicList(self):
+        '''
+        return: <type 'list'>
+        '''
+        if self.Verbose: print('getNormalizedTopicList()',type(self.NormalizedTopicList))
+        return self.NormalizedTopicList
     def getDistance(self):
         '''
         return: <type 'numpy.ndarray'>
         '''
         if self.Verbose: print('getDistance',type(self.Distance_DC_Storage))
         return self.Distance_DC_Storage
+
     def generateDistanceBetweenStorageAndDC(self,numStorage =6, numDC=20):
         # Generate Distance Between Each Storage And Distribution Center
         DC = self.DCLocation
@@ -236,3 +244,13 @@ class dataSet():
             with open(self.fileName_TopicList, 'rb') as handle:
                 self.TopicList = cPickle.load(handle)
             if self.Verbose: print("Load Topic List",self.fileName_TopicList)
+    def generateNormalizedTopicList(self,numInvoice = 16649, numStorage = 6):
+        #for invoice in self.TopicList:
+        #    print(invoice)
+        NormalizedTopicList = self.TopicList[:]
+        for i in range(numInvoice):
+            invoice = NormalizedTopicList[i]
+            denominator = sum(invoice[0:numStorage])
+            for j in range(numStorage):
+                invoice[j] /= denominator *1.0
+        self.NormalizedTopicList = NormalizedTopicList

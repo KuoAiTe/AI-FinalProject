@@ -70,8 +70,16 @@ class dataSet():
         self.generateStorageLocation(numStorage = self.numStorage, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateDCLocation(numDC = self.numDC, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateDistanceBetweenStorageAndDC(numDC = self.numDC,numStorage = self.numStorage)
+        self.generateLeastDistance(numDC = self.numDC)
         self.generateTopicList(numStorage = self.numStorage)
         self.generateNormalizedTopicList(numInvoice = self.numInvoice, numStorage = self.numStorage)
+    def generateLeastDistance(self,numDC = 20):
+        SortedDistanceIndex = []
+        for i in range(numDC):
+            record = self.Distance_DC_Storage[i]
+            _sort = np.argsort(record)
+            SortedDistanceIndex.append(_sort)
+        self.SortedDistanceIndex = SortedDistanceIndex
     def getCustomerLocation(self):
         '''
         return: <type 'numpy.ndarray'>
@@ -120,16 +128,21 @@ class dataSet():
         '''
         if self.Verbose: print('getDistance',type(self.Distance_DC_Storage))
         return self.Distance_DC_Storage
-
+    def getSortedDistanceIndex(self):
+        '''
+        return: <type 'list'>
+        '''
+        if self.Verbose: print('getSortedDistanceIndex()',type(self.self.SortedDistanceIndex))
+        return self.self.SortedDistanceIndex
     def generateDistanceBetweenStorageAndDC(self,numStorage =6, numDC=20):
         # Generate Distance Between Each Storage And Distribution Center
         DC = self.DCLocation
         StorageLocation = self.StorageLocation
-        distance = np.zeros((numStorage,numDC))
-        for i in range(numStorage):
-            storage = StorageLocation[i]
-            for j in range(numDC):
-                dc = DC[j]
+        distance = np.zeros((numDC,numStorage))
+        for i in range(numDC):
+            dc = DC[i]
+            for j in range(numStorage):
+                storage = StorageLocation[j]
                 distance[i,j] = np.linalg.norm(dc-storage)
         self.Distance_DC_Storage = distance
     def generateDCLocation(self,numDC = 20, Longitude_Base = 0, Latitude_Base = 0):

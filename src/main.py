@@ -22,6 +22,7 @@ StorageLocation = df.getStorageLocation()
 DC = df.getDC()
 TopicList = df.getTopicList()
 Distance = df.getDistance()
+SortedDistanceIndex = df.SortedDistanceIndex
 NormalizedTopicList = df.getNormalizedTopicList()
 #print('CustomerLocation',CustomerLocation)
 #print('ProductStorage',ProductStorage)

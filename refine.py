@@ -23,13 +23,14 @@ def findNearCent(point, m_centroids):
 
 def updateCentroids(m_orders, l_clusters):
     newCentroids = []
-    length = len(m_orders[0])
+    n_features = len(m_orders[0])
     for i in range(len(l_clusters)):
         tmp = np.array([])
-        for j in range(len(l_clusters[i])):
+        n_points = len(l_clusters[i])
+        for j in range(n_points):
             tmp += np.array(m_orders[l_clusters[i][j]])
-        for k in range(length):
-            tmp[k] /= len(l_clusters[i])
+        for k in range(n_features):
+            tmp[k] /= n_points
         newCentroids.append(tmp.tolist())
     return newCentroids
 

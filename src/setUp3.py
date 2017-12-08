@@ -36,9 +36,9 @@ for index, row in data.iterrows():
     CustomerID, InvoiceNo, Quantity, StockCode = row
 
     if StockCode not in pointList[InvoiceNo]:
-        pointList[InvoiceNo][StockCode] = 1
+        pointList[InvoiceNo][StockCode] = Quantity
     else:
-        pointList[InvoiceNo][StockCode] += 1
+        pointList[InvoiceNo][StockCode] += Quantity
 
     if 'CustomerID' not in pointList[InvoiceNo]:
         pointList[InvoiceNo]['CustomerID'] = CustomerID

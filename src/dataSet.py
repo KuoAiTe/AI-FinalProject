@@ -40,6 +40,7 @@ class dataSet():
             self.fileName_StorageLocation = './data/StorageLocation.pkl'
             self.fileName_TopicList = './data/TopicList.pkl'
             self.setup()
+            if self.Verbose: print('Dataset is loaded.')
     def loadDataSet(self, fileName = None):
         if(fileName is None):
             raise ValueError("DataSet.loadDataSet: No file is provided.")
@@ -56,7 +57,7 @@ class dataSet():
         CustomerID =d['CustomerID'][0][0][0]
         Quantity = d['Quantity'][0][0][0]
         self.data = pd.DataFrame({'InvoiceNo':InvoiceNo,'StockCode':StockCode,'CustomerID':CustomerID,'Quantity':Quantity})
-        if self.Verbose: print('Successfully Load Data Set')
+        if self.Verbose: print('Load Data Set')
         return True
     def getData(self):
         return self.data
@@ -70,16 +71,40 @@ class dataSet():
         self.generateStorageLocation(numStorage = self.numStorage, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateTopicList(numStorage = self.numStorage)
     def getCustomerLocation(self):
+        '''
+        return: <type 'numpy.ndarray'>
+        '''
+        if self.Verbose: print('getCustomerLocation()',type(self.CustomerLocation))
         return self.CustomerLocation
     def getProductStorage(self):
+        '''
+        return: <type 'numpy.ndarray'>
+        '''
+        if self.Verbose: print('getProductStorage()',type(self.ProductStorage))
         return self.ProductStorage
     def getInvoiceList(self):
+        '''
+        return: <type 'list'>
+        '''
+        if self.Verbose: print('getInvoiceList()',type(self.ProductStorage))
         return self.InvoiceList
     def getStorageLocation(self):
+        '''
+        return: <type 'numpy.ndarray'>
+        '''
+        if self.Verbose: print('getStorageLocation()',type(self.StorageLocation))
         return self.StorageLocation
     def getDC(self):
+        '''
+        return: <type 'numpy.ndarray'>
+        '''
+        if self.Verbose: print('getDC()',type(self.DCLocation))
         return self.DCLocation
     def getTopicList(self):
+        '''
+        return: <type 'list'>
+        '''
+        if self.Verbose: print('getTopicList',type(self.TopicList))
         return self.TopicList
     def generateDCLocation(self,numDC = 20, Longitude_Base = 0, Latitude_Base = 0):
         if not os.path.isfile(self.fileName_DCLocation):
@@ -89,12 +114,12 @@ class dataSet():
             self.DCLocation = np.column_stack((DCLongtitude, DCLatitude))
             with open(self.fileName_DCLocation, 'wb') as handle:
                 cPickle.dump(self.DCLocation, handle)
-            if self.Verbose: print("Successfully Generate Distribution Centers Location")
+            if self.Verbose: print("Generate Distribution Centers Location",self.fileName_DCLocation)
         else:
             # Load the file
             with open(self.fileName_DCLocation, 'rb') as handle:
                 self.DCLocation = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Customer Location")
+            if self.Verbose: print("Load Customer Location",self.fileName_DCLocation)
     def generateCustomerLocation(self, customerSize, Longitude_Base = 0, Latitude_Base = 0, scale = 1):
         if not os.path.isfile(self.fileName_CustomerLocation):
             # Generate Customer Location if the file doesn't exist
@@ -104,12 +129,12 @@ class dataSet():
             self.CustomerLocation = np.column_stack((customerLongtitude, customerLatitude))
             with open(self.fileName_CustomerLocation, 'wb') as handle:
                 cPickle.dump(self.CustomerLocation, handle)
-            if self.Verbose: print("Successfully Generate Customer Location")
+            if self.Verbose: print("Generate Customer Location",self.fileName_CustomerLocation)
         else:
             # Load the file
             with open(self.fileName_CustomerLocation, 'rb') as handle:
                 self.CustomerLocation = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Customer Location")
+            if self.Verbose: print("Load Customer Location",self.fileName_CustomerLocation)
     def generateProductStorage(self,numItem,numStorage):
         if not os.path.isfile(self.fileName_ProductStorage):
             # Generate ProductStorage if the file doesn't exist
@@ -120,12 +145,12 @@ class dataSet():
             self.ProductStorage = productStorage
             with open(self.fileName_ProductStorage, 'wb') as handle:
                 cPickle.dump(self.ProductStorage, handle)
-            if self.Verbose: print("Successfully Product Storage")
+            if self.Verbose: print("Product Storage",self.fileName_ProductStorage)
         else:
             # Load the file
             with open(self.fileName_ProductStorage, 'rb') as handle:
                 self.ProductStorage = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Product Storage")
+            if self.Verbose: print("Load Product Storage",self.fileName_ProductStorage)
     def generateInvoiceList(self,numInvoice):
         if not os.path.isfile(self.fileName_InvoiceList):
             # Generate InvoiceList if the file doesn't exist
@@ -142,12 +167,12 @@ class dataSet():
             self.InvoiceList = InvoiceList
             with open(self.fileName_InvoiceList, 'wb') as handle:
                 cPickle.dump(self.InvoiceList, handle)
-            if self.Verbose: print("Successfully Generate Mapping (InvoiceNo to StockCode)")
+            if self.Verbose: print("Generate Mapping (InvoiceNo to StockCode)",self.fileName_InvoiceList)
         else:
             # Load the file
             with open(self.fileName_InvoiceList, 'rb') as handle:
                 self.InvoiceList = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Mapping (InvoiceNo to StockCode)")
+            if self.Verbose: print("Load Mapping (InvoiceNo to StockCode)",self.fileName_InvoiceList)
     def generateStorageLocation(self,numStorage = 6, Longitude_Base = 0, Latitude_Base = 0):
         if not os.path.isfile(self.fileName_StorageLocation):
             # Generate StorageLocation if the file doesn't exist
@@ -157,12 +182,12 @@ class dataSet():
             self.StorageLocation = np.column_stack((storageLongtitude, storageLatitude))
             with open(self.fileName_StorageLocation, 'wb') as handle:
                 cPickle.dump(self.storageLocation, handle)
-            if self.Verbose: print("Successfully Generate Storage Location")
+            if self.Verbose: print("Generate Storage Location",self.fileName_StorageLocation)
         else:
             # Load the file
             with open(self.fileName_StorageLocation, 'rb') as handle:
                 self.StorageLocation = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Storage Location")
+            if self.Verbose: print("Load Storage Location",self.fileName_StorageLocation)
     def generateTopicList(self,numStorage = 6):
         # Generate TopicList if the file doesn't exist
         if not os.path.isfile(self.fileName_TopicList):
@@ -186,9 +211,9 @@ class dataSet():
             self.TopicList = TopicList
             with open(self.fileName_TopicList, 'wb') as handle:
                 cPickle.dump(self.topicList, handle)
-            if self.Verbose: print("Successfully Generate Topic List")
+            if self.Verbose: print("Generate Topic List",self.fileName_TopicList)
         else:
             # Load the file
             with open(self.fileName_TopicList, 'rb') as handle:
                 self.TopicList = cPickle.load(handle)
-            if self.Verbose: print("Successfully Load Topic List")
+            if self.Verbose: print("Load Topic List",self.fileName_TopicList)

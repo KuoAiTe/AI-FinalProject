@@ -70,6 +70,7 @@ class dataSet():
         self.generateDCLocation(numDC = self.numDC, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateStorageLocation(numStorage = self.numStorage, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateTopicList(numStorage = self.numStorage)
+        self.generateDistanceBetweenStorageAndDC(numDC = self.numDC,numStorage = self.numStorage)
     def getCustomerLocation(self):
         '''
         return: <type 'numpy.ndarray'>
@@ -106,8 +107,26 @@ class dataSet():
         '''
         if self.Verbose: print('getTopicList',type(self.TopicList))
         return self.TopicList
+    def getDistance(self):
+        '''
+        return: <type 'numpy.ndarray'>
+        '''
+        if self.Verbose: print('getDistance',type(self.Distance_DC_Storage))
+        return self.Distance_DC_Storage
+    def generateDistanceBetweenStorageAndDC(self,numStorage =6, numDC=20):
+        # Generate Distance Between Each Storage And Distribution Center
+        DC = self.DCLocation
+        StorageLocation = self.StorageLocation
+        distance = np.zeros((numStorage,numDC))
+        for i in range(numStorage):
+            storage = StorageLocation[i]
+            for j in range(numDC):
+                dc = DC[j]
+                distance[i,j] = np.linalg.norm(dc-storage)
+        self.Distance_DC_Storage = distance
     def generateDCLocation(self,numDC = 20, Longitude_Base = 0, Latitude_Base = 0):
         if not os.path.isfile(self.fileName_DCLocation):
+            # Generate DCLocation if the file doesn't exist
             DCLocation = np.random.normal(loc = 0.5,scale = 0.13, size = (numDC,2))
             DCLongtitude = DCLocation[:,0] + Longitude_Base
             DCLatitude = DCLocation[:,1] + Latitude_Base

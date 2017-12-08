@@ -69,6 +69,18 @@ class dataSet():
         self.generateDCLocation(numDC = self.numDC, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateStorageLocation(numStorage = self.numStorage, Longitude_Base = self.Longitude_Base, Latitude_Base = self.Latitude_Base)
         self.generateTopicList(numStorage = self.numStorage)
+    def getCustomerLocation(self):
+        return self.CustomerLocation
+    def getProductStorage(self):
+        return self.ProductStorage
+    def getInvoiceList(self):
+        return self.InvoiceList
+    def getStorageLocation(self):
+        return self.StorageLocation
+    def getDC(self):
+        return self.DCLocation
+    def getTopicList(self):
+        return self.TopicList
     def generateDCLocation(self,numDC = 20, Longitude_Base = 0, Latitude_Base = 0):
         if not os.path.isfile(self.fileName_DCLocation):
             DCLocation = np.random.normal(loc = 0.5,scale = 0.13, size = (numDC,2))
@@ -89,14 +101,14 @@ class dataSet():
             customerLocation = np.random.normal(loc = 0,scale = scale, size = (customerSize,2))
             customerLongtitude = customerLocation[:,0] + Longitude_Base
             customerLatitude = customerLocation[:,1] + Latitude_Base
-            self.customerLocation = np.column_stack((customerLongtitude, customerLatitude))
+            self.CustomerLocation = np.column_stack((customerLongtitude, customerLatitude))
             with open(self.fileName_CustomerLocation, 'wb') as handle:
-                cPickle.dump(self.customerLocation, handle)
+                cPickle.dump(self.CustomerLocation, handle)
             if self.Verbose: print("Successfully Generate Customer Location")
         else:
             # Load the file
             with open(self.fileName_CustomerLocation, 'rb') as handle:
-                self.customerLocation = cPickle.load(handle)
+                self.CustomerLocation = cPickle.load(handle)
             if self.Verbose: print("Successfully Load Customer Location")
     def generateProductStorage(self,numItem,numStorage):
         if not os.path.isfile(self.fileName_ProductStorage):
@@ -105,14 +117,14 @@ class dataSet():
             for i in range(numItem):
                 storageNum = np.random.choice(np.arange(numStorage))
                 productStorage[i] = [i,storageNum]
-            self.productStorage = productStorage
+            self.ProductStorage = productStorage
             with open(self.fileName_ProductStorage, 'wb') as handle:
-                cPickle.dump(self.productStorage, handle)
+                cPickle.dump(self.ProductStorage, handle)
             if self.Verbose: print("Successfully Product Storage")
         else:
             # Load the file
             with open(self.fileName_ProductStorage, 'rb') as handle:
-                self.productStorage = cPickle.load(handle)
+                self.ProductStorage = cPickle.load(handle)
             if self.Verbose: print("Successfully Load Product Storage")
     def generateInvoiceList(self,numInvoice):
         if not os.path.isfile(self.fileName_InvoiceList):
@@ -127,14 +139,14 @@ class dataSet():
                     InvoiceList[InvoiceNo][StockCode] += Quantity
                 if 'CustomerID' not in InvoiceList[InvoiceNo]:
                     InvoiceList[InvoiceNo]['CustomerID'] = CustomerID
-            self.invoiceList = InvoiceList
+            self.InvoiceList = InvoiceList
             with open(self.fileName_InvoiceList, 'wb') as handle:
-                cPickle.dump(self.invoiceList, handle)
+                cPickle.dump(self.InvoiceList, handle)
             if self.Verbose: print("Successfully Generate Mapping (InvoiceNo to StockCode)")
         else:
             # Load the file
             with open(self.fileName_InvoiceList, 'rb') as handle:
-                self.invoiceList = cPickle.load(handle)
+                self.InvoiceList = cPickle.load(handle)
             if self.Verbose: print("Successfully Load Mapping (InvoiceNo to StockCode)")
     def generateStorageLocation(self,numStorage = 6, Longitude_Base = 0, Latitude_Base = 0):
         if not os.path.isfile(self.fileName_StorageLocation):
@@ -142,22 +154,22 @@ class dataSet():
             storageLocation = np.array([[0.912,0.471],[0.765,0.824],[0.295,0.835],[0.165,0.524],[0.341,0.241],[0.753,0.247]])
             storageLongtitude = storageLocation[:,0] + Longitude_Base
             storageLatitude = storageLocation[:,1] + Latitude_Base
-            self.storageLocation = np.column_stack((storageLongtitude, storageLatitude))
+            self.StorageLocation = np.column_stack((storageLongtitude, storageLatitude))
             with open(self.fileName_StorageLocation, 'wb') as handle:
                 cPickle.dump(self.storageLocation, handle)
             if self.Verbose: print("Successfully Generate Storage Location")
         else:
             # Load the file
             with open(self.fileName_StorageLocation, 'rb') as handle:
-                self.storageLocation = cPickle.load(handle)
+                self.StorageLocation = cPickle.load(handle)
             if self.Verbose: print("Successfully Load Storage Location")
     def generateTopicList(self,numStorage = 6):
         # Generate TopicList if the file doesn't exist
         if not os.path.isfile(self.fileName_TopicList):
             TopicList = []
-            invoiceList = self.invoiceList
-            customerLocation = self.customerLocation
-            productStorage = self.productStorage
+            invoiceList = self.InvoiceList
+            customerLocation = self.CustomerLocation
+            productStorage = self.ProductStorage
             for invoice in invoiceList:
                 customerID = invoice['CustomerID']
                 longitude = customerLocation[customerID][0]
@@ -171,12 +183,12 @@ class dataSet():
                         count[storageNum] += invoice[stockCode]
                 record = count + location
                 TopicList.append(record)
-            self.topicList = TopicList
+            self.TopicList = TopicList
             with open(self.fileName_TopicList, 'wb') as handle:
                 cPickle.dump(self.topicList, handle)
             if self.Verbose: print("Successfully Generate Topic List")
         else:
             # Load the file
             with open(self.fileName_TopicList, 'rb') as handle:
-                self.topicList = cPickle.load(handle)
+                self.TopicList = cPickle.load(handle)
             if self.Verbose: print("Successfully Load Topic List")

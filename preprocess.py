@@ -8,14 +8,40 @@ import pandas as pd
 class preprocessor():
     def __init__(self, fileName):
         self.df = dataSet(fileName)
-        self.data = self.df.getData()
+        # self.CustomerLocation = self.df.getCustomerLocation()
+        # self.ProductStorage = self.df.getProductStorage()
+        # self.InvoiceList = self.df.getInvoiceList()
 
     def get_order(self):
-        m_order = self.df.getOrder()
-        # print(data)
-        print(m_order[0,0])
-        print(m_order[7,0])
-        print(m_order[1,0])
-        
-        return m_order
+        # return self.df.getTopicList()
+        return self.df.getNormalizedTopicList()
 
+    def get_wLocation(self):
+        return self.df.getStorageLocation()
+
+    def get_dLocation(self):
+        return self.df.getDC()
+
+    def get_sortedWarehouses(self):
+        return self.df.getDistance()
+
+    def get_invoiceList(self):
+        return self.df.getInvoiceList()
+
+    def get_productStorage(self):
+        return self.df.getProductStorage()
+
+    def get_cLocation(self):
+        return self.df.getCustomerLocation()
+
+    def get_sortedDistanceIndex(self):
+        return self.df.getSortedDistanceIndex()
+
+    def get_topicList(self):
+        return self.df.getTopicList()
+
+    def get_skuKeeing(self):
+        return self.df.getProductStorage()
+
+    def get_quantity(self):
+        return self.df.getInvoiceList()

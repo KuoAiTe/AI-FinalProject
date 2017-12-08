@@ -34,10 +34,11 @@ def updateCentroids(m_orders, l_clusters):
     return newCentroids
 
 def refining(m_orders, l_clusters, m_centroids, minVolume):
-    epsilon = 0.001
+    epsilon = 0.01
+    n_clusters = len(l_clusters)
     while True:
-        for i in range(len(l_clusters)):
-            if len(l_clusters[i]) >= minVolume + 1:
+        for i in range(n_clusters):
+            if len(l_clusters[i]) > minVolume:
                 for j in range(len(l_clusters[i])):
                     pointIndex = l_clusters[i][j]
                     bestIndex = findNearCent(m_orders[pointIndex], m_centroids)

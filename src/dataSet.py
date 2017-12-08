@@ -132,7 +132,7 @@ class dataSet():
         '''
         return: <type 'list'>
         '''
-        if self.Verbose: print('getSortedDistanceIndex()',type(self.self.SortedDistanceIndex))
+        if self.Verbose: print('getSortedDistanceIndex()',type(self.SortedDistanceIndex))
         return self.self.SortedDistanceIndex
     def generateDistanceBetweenStorageAndDC(self,numStorage =6, numDC=20):
         # Generate Distance Between Each Storage And Distribution Center

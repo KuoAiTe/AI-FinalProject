@@ -8,9 +8,10 @@ import random
 import pandas as pd
 from dataSet import dataSet
 
+from sklearn.cluster import KMeans
+
+
 fileName = "./data/data.mat"
 df = dataSet(fileName)
-data = df.getData()
-m_order = df.getOrder()
-print(data)
-print(m_order)
+#data = df.getData()
+#m_order = df.getOrder()

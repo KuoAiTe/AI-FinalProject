@@ -10,12 +10,11 @@ class balanced_kmeans(kmeans):
         self.idx = np.zeros(self.dataSize, dtype = int)
         self.w_location = w_location
         self.c_location = c_location
-        self.minVolume = 700
+        self.minVolume = 800
         K = 20      # number of clusters
         L = K       # proportion = 1/L
         S = 50      # at least S samples are chosen from each partition
         P = 0.9    # confidence level
-        availableSpot = 700
         m_sample_order, m_sample_order_idx = sample(matrix = m_order, K = K, L = L, S = S, P = P)
         self.m_sample_order_idx = m_sample_order_idx
         super(balanced_kmeans,self).__init__(m_sample_order, quantityTopic, quantityInvoice, d_location, nearWarehouse, n_clusters)
@@ -86,8 +85,8 @@ class balanced_kmeans(kmeans):
             if minDist > distance:
                 minDist = distance
                 index = i
-        return i
-    def updateCentroids(self,m_orders, clusterList):
+        return index
+    def updateCentroids_Refine(self,m_orders, clusterList):
         newCentroids = []
         n_features = len(m_orders[0])
         for i in range(len(clusterList)):
@@ -100,13 +99,13 @@ class balanced_kmeans(kmeans):
                 tmp[k] /= n_points
             newCentroids.append(tmp.tolist())
         return np.array(newCentroids)
-    '''
-    def total_distance(self):
+
+    def total_obj(self):
         distortion = 0
         for i in range(self.dataSize):
-            distortion += calDistance(self.m_order[i][-2:], self.centroids[self.idx[i]][-2:])
+            distortion += calDistance(self.m_order[i], self.centroids[self.idx[i]])
         return distortion
-    '''
+
     def refine(self):
         '''
         move a point from its current cluster to a nearer one guarrenting the balanced constraints
@@ -126,18 +125,21 @@ class balanced_kmeans(kmeans):
         minVolume = self.minVolume
         centroids = super(balanced_kmeans,self).getCentroids()
         clusterList = self.getClusters()
+
         while True:
             numCluster = [len(clusterList[i]) for i in range(n_clusters)]
             print(numCluster)
+
             for clusterIdx in range(n_clusters):
                 if numCluster[clusterIdx] > minVolume:
                     for j in range(numCluster[clusterIdx]):
+
+                        if j >= len(clusterList[i]): break
                         instanceIdx = clusterList[clusterIdx][j]
                         bestIndex = self.findNearestCentroid(m_orders[instanceIdx], centroids)
-                        print(clusterIdx,bestIndex)
-                        if i != bestIndex:
-                            print('instanceIndex',instanceIndex,'original',i,'after',bestIndex)
-                            self.idx[instanceIdx] = clusterIdx
+                        if clusterIdx != bestIndex:
+                            self.idx[instanceIdx] = bestIndex
+                            #print('idx',instanceIdx,'original',clusterIdx,'after',bestIndex)
                             numCluster[bestIndex] +=1
                             numCluster[clusterIdx] -=1
                             if numCluster[clusterIdx] <= minVolume:
@@ -146,8 +148,10 @@ class balanced_kmeans(kmeans):
             clusterList = self.getClusters()
             numCluster = [len(clusterList[i]) for i in range(n_clusters)]
             print(numCluster)
-            newCentroids = self.updateCentroids(m_orders, clusterList)
+            newCentroids = self.updateCentroids_Refine(m_orders, clusterList)
 
+            print('Objective value after refining:', calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
+            print('obj',self.total_obj())
             if np.linalg.norm(centroids - newCentroids) <= epsilon:
                 break
             centroids = newCentroids
@@ -167,4 +171,3 @@ class balanced_kmeans(kmeans):
         g = time.time()
         self.refine()
         print('Time Used:',time.time()-g)
-        print('Objective value after refining:', calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))

@@ -4,7 +4,7 @@ import random
 import time
 from general import *
 
-epsilon = 1
+epsilon = 0.1
 
 class kmeans(object):
     '''
@@ -28,7 +28,7 @@ class kmeans(object):
         self.MaxIteration = 100
         self.sampleSize = len(self.m_sample_orders)
         self.sampleIdx = np.zeros(self.sampleSize, dtype = int)
-        self.Verbose = False
+        self.Verbose = True
 
 
     def initCentroids(self):
@@ -98,6 +98,7 @@ class kmeans(object):
                 #print('obj',self.total_distance())
             if distortion_difference <= current_distortion * epsilon:
                 break
+
             self.updateCentroids()
 
             previous_distortion = current_distortion

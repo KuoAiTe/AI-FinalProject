@@ -71,24 +71,41 @@ minVolume = [ 0 for _ in xrange(len(clusterList))]
 for i in xrange(len(clusterList)):
     minVolume[i] = max(m - len(clusterList[i]),0)
 
+
 for j in remainingPointsIndex:
     p = pointTopicPortionList[j]
-    belongIndex = 0
     p1 = np.array(p)
-    p2 = np.array(centroidList[0])
-    minDistance = distance(p1,p2)
-    for i in xrange(1,len(clusterList)):
-        p2 = np.array(centroidList[i])
-        if distance(p1,p2) < minDistance and minVolume[i] > 0 :
-            minDistance = distance(p1,p2)
-            belongIndex = i
-    minVolume[belongIndex] -= 1
-    clusterList[belongIndex].add(j)
-# tot = 0
-# for each in clusterList:
-#     print len(each)
-#     tot += len(each)
-# print tot
+    # init
+    minDistance = 100000000
+    belongIndex = -100000000
+    # first round 
+    for i in xrange(len(clusterList)):
+        if minVolume[i] > 0:
+            p2 = np.array(centroidList[i])
+            if distance(p1,p2) < minDistance:
+                minDistance = distance(p1,p2)
+                belongIndex = i
+    if belongIndex > -1:
+        minVolume[belongIndex] -= 1
+        clusterList[belongIndex].add(j)
+    # else second round
+    else:
+        for i in xrange(len(clusterList)):
+            p2 = np.array(centroidList[i])
+            if distance(p1,p2) < minDistance:
+                minDistance = distance(p1,p2)
+                belongIndex = i
+        if belongIndex > -1:
+            minVolume[belongIndex] -= 1
+            clusterList[belongIndex].add(j)
+        else:
+            print("Warning") 
+
+tot = 0
+for each in clusterList:
+    print len(each)
+    tot += len(each)
+print tot
 
 f = open('clusterList.pkl','wb')
 cPickle.dump(clusterList,f)

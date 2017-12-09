@@ -101,6 +101,8 @@ class balanced_kmeans(kmeans):
             distortion += calDistance(self.m_sample_orders[i], self.centroids[self.sampleIdx[i]])
         return distortion
 
+    def getIdx(self):
+        return self.idx
     def refine(self):
         '''
         move a point from its current cluster to a nearer one guarrenting the balanced constraints

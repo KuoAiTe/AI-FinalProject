@@ -25,10 +25,11 @@ def updateCentroids(m_orders, l_clusters):
     newCentroids = []
     n_features = len(m_orders[0])
     for i in range(len(l_clusters)):
-        tmp = np.array([])
+        tmp = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         n_points = len(l_clusters[i])
         for j in range(n_points):
-            tmp += np.array(m_orders[l_clusters[i][j]])
+            # tmp += np.array(m_orders[l_clusters[i][j]])
+            tmp += m_orders[l_clusters[i][j]]
         for k in range(n_features):
             tmp[k] /= n_points
         newCentroids.append(tmp.tolist())
@@ -51,7 +52,7 @@ def refining(m_orders, l_clusters, m_centroids, minVolume):
                             break
         
         newCentroids = updateCentroids(m_orders, l_clusters)
-        if np.linalg.norm(m_centroids - newCentroids) <= epsilon:
+        if np.linalg.norm(np.array(m_centroids) - np.array(newCentroids)) <= epsilon:
             break
         else:
             m_centroids = newCentroids

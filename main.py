@@ -10,6 +10,12 @@ from sklearn.cluster import KMeans
 from kmeans import kmeans
 from populate import populating
 from refine import refining
+from general import *
+
+# modified by cwang
+import cPickle
+import numpy as np
+import re
 
 start = time.clock()
 
@@ -41,62 +47,28 @@ print('sampling takes:', time.clock() - start_preprocessing)
 # Clustering
 print("clustering...")
 start_clustering = time.clock()
-# km = kmeans(orders = m_sample_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, 
-#             c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
-# km.solve()
-# print(km.idx)
-# clusterList = km.getClusters()
-# centroidList = km.getCentroids()
-# idx = km.getIdx()
+km = kmeans(orders = m_sample_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, 
+            c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
+km.solve()
+print(km.idx)
+clusterList = km.getClusters()
+centroidList = km.getCentroids()
+idx = km.getIdx()
 print('clustring takes:', time.clock() - start_clustering)
-
-
-
-# with open('centroid.txt', 'w') as f:
-#     for i in range(len(centroidList)):
-#         f.write(str(centroidList[i]) + '\n')
-#     f.close()
-# with open('idx.txt', 'w') as f:
-#     for i in range(len(idx)):
-#         f.write(str(idx[i]) + '\n')
-#     f.close()
-# with open('sampleID.txt', 'w') as f:
-#     for i in range(len(v_sampleID)):
-#         f.write(str(v_sampleID[i]) + '\n')
-#     f.close()
-# with open('sampleID.txt', 'w') as f:
-#     for i in range(len(v_sampleID)):
-#         f.write(str(v_sampleID[i]) + '\n')
-#     f.close()
-
-
-#------------------------------------------------------------------------
-f = open('centroid.txt')
-m_centroids = []
-for each in f:
-    m_centroids.append(int(each))
-f.close()
-f = open('idx.txt')
-idx = []
-for each in f:
-    idx.append(int(each))
-f.close()
-l_clusters = []
-for j in range(len(m_centroids)):
-    l_clusters.append([])
-for i in range(len(m_order)):
-    l_clusters[idx[i]].append(i)
-#------------------------------------------------------------------------
 
 # Populating
 print('Populating...')
 start_populating = time.clock()
-# clusterList = populating(clusterList)
+clusterList = populating(clusterList)
 print('populating takes:', time.clock() - start_populating)
+oldIdx = getIdx(clusterList, len(m_order))
+print('Objective value after populating:', calObjective(topicList, invoiceList, w_location, d_location, c_location, oldIdx))
 
+# Refining
 print('Refining...')
 start_refining = time.clock()
-# clusterList = refining(m_orders = m_order, l_clusters = clusterList, m_centroids = centroidList, minVolume = minVolume)
-clusterList = refining(m_orders = m_order, l_clusters = l_clusters, m_centroids = m_centroids, minVolume = minVolume)
+clusterList = refining(m_orders = m_order, l_clusters = clusterList, m_centroids = centroidList, minVolume = minVolume)
 print('refining takes:', time.clock() - start_refining)
+newIdx = getIdx(clusterList, len(m_order))
+print('Objective value after refining:', calObjective(topicList, invoiceList, w_location, d_location, c_location, newIdx))
 print('Total time consumption:', time.clock() - start)

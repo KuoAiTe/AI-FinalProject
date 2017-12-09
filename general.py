@@ -96,3 +96,10 @@ def calObjective(quantityTopic, quantityInvoice, w_location, d_location, c_locat
     
     cost += c1 * travelDist_dc + c2 * travelDist_dw
     return cost
+
+def getIdx(clusters, n_points):
+    idx = np.zeros(n_points, dtype = int)
+    for i in range(len(clusters)):
+        for j in range(len(clusters[i])):
+            idx[clusters[i][j]] = i
+    return idx

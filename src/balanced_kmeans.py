@@ -127,22 +127,30 @@ class balanced_kmeans(kmeans):
         centroids = super(balanced_kmeans,self).getCentroids()
         clusterList = self.getClusters()
         while True:
-            for i in range(n_clusters):
-                if len(clusterList[i]) > minVolume:
-                    for j in range(len(clusterList[i])):
-                        instanceIdx = clusterList[i][j]
+            numCluster = [len(clusterList[i]) for i in range(n_clusters)]
+            print(numCluster)
+            for clusterIdx in range(n_clusters):
+                if numCluster[clusterIdx] > minVolume:
+                    for j in range(numCluster[clusterIdx]):
+                        instanceIdx = clusterList[clusterIdx][j]
                         bestIndex = self.findNearestCentroid(m_orders[instanceIdx], centroids)
+                        print(clusterIdx,bestIndex)
                         if i != bestIndex:
-                            self.idx[instanceIdx] = i
-                            if len(clusterList[i]) <= minVolume:
+                            print('instanceIndex',instanceIndex,'original',i,'after',bestIndex)
+                            self.idx[instanceIdx] = clusterIdx
+                            numCluster[bestIndex] +=1
+                            numCluster[clusterIdx] -=1
+                            if numCluster[clusterIdx] <= minVolume:
                                 break
 
             clusterList = self.getClusters()
+            numCluster = [len(clusterList[i]) for i in range(n_clusters)]
+            print(numCluster)
             newCentroids = self.updateCentroids(m_orders, clusterList)
-            centroids = newCentroids
+
             if np.linalg.norm(centroids - newCentroids) <= epsilon:
                 break
-
+            centroids = newCentroids
         self.centroids = centroids
 
     def execute(self):

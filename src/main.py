@@ -4,6 +4,7 @@ Course project of COMP6600
 import math
 import random
 import pandas as pd
+from general import Calculator
 from dataSet import dataSet
 from sklearn.cluster import KMeans
 from balanced_kmeans import balanced_kmeans
@@ -15,7 +16,7 @@ m_order = dataSet.get_order()       # m_order is sparse matrix
 topicList = dataSet.get_topicList()
 # Sampling
 print('Sampleing...')
-
+global ALPHA,BETA
 # Clustering
 d_location = dataSet.get_dLocation()
 w_location = dataSet.get_wLocation()
@@ -25,8 +26,12 @@ skuKeeping = dataSet.get_skuKeeping()
 invoiceList = dataSet.get_quantity()
 
 print("clustering...")
-km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
-km.execute()
+for i in range(0,101):
+    Calculator.setPortion(1.0*i/100)
+    print('ALPHA',Calculator.ALPHA)
+    print('BETA',Calculator.BETA)
+    km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
+    km.execute()
 
 
 #print(km.idx)

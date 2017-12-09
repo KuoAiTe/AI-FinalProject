@@ -9,7 +9,7 @@ import scipy.io as sio
 import pandas as pd
 import matplotlib.pyplot as plt
 class preProcessor():
-    def __init__(self,fileName = "./data/data.mat", numStorage = 6, numDC = 20,Verbose = True):
+    def __init__(self,fileName = "./data/data.mat", numStorage = 6, numDC = 20,Verbose = False):
         '''
         Parameters:
         self.customerSize: The number of customers

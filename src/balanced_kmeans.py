@@ -1,8 +1,8 @@
 from kmeans import kmeans
 from sample import sample
-from general import *
+from general import Calculator
 import time
-import numpy
+import numpy as np
 class balanced_kmeans(kmeans):
     def __init__(self, m_order, quantityTopic, quantityInvoice, w_location, d_location, c_location, nearWarehouse, n_clusters):
         self.m_order = m_order
@@ -27,7 +27,7 @@ class balanced_kmeans(kmeans):
     def getObj(self):
         distortion = 0
         for i in range(self.sampleSize):
-            distortion += calDistance(self.m_sample_orders[i], self.centroids[self.sampleIdx[i]])
+            distortion += Calculator.calDistance(self.m_sample_orders[i], self.centroids[self.sampleIdx[i]])
         return distortion
 
     def getIdx(self):
@@ -60,8 +60,8 @@ class balanced_kmeans(kmeans):
             for i in range(n_clusters):
                 if availableSpot[i] > 0:
                     centroid = centroids[i]
-                    if calDistance(instance,centroid) < minDistance:
-                        minDistance = calDistance(instance,centroid)
+                    if Calculator.calDistance(instance,centroid) < minDistance:
+                        minDistance = Calculator.calDistance(instance,centroid)
                         clusterIdx = i
 
             if clusterIdx > -1:
@@ -70,8 +70,8 @@ class balanced_kmeans(kmeans):
             else:
                 for i in range(n_clusters):
                     centroid = centroids[i]
-                    if calDistance(instance,centroid) < minDistance:
-                        minDistance = calDistance(instance,centroid)
+                    if Calculator.calDistance(instance,centroid) < minDistance:
+                        minDistance = Calculator.calDistance(instance,centroid)
                         clusterIdx = i
                 if clusterIdx > -1:
                     availableSpot[clusterIdx] -= 1
@@ -81,7 +81,7 @@ class balanced_kmeans(kmeans):
     def findNearestCentroid(self,instance, centroids):
         minDist = 99999999
         for i in range(len(centroids)):
-            distance = calDistance(instance, centroids[i])
+            distance = Calculator.calDistance(instance, centroids[i])
             if minDist > distance:
                 minDist = distance
                 index = i
@@ -103,7 +103,7 @@ class balanced_kmeans(kmeans):
     def total_obj(self):
         distortion = 0
         for i in range(self.dataSize):
-            distortion += calDistance(self.m_order[i], self.centroids[self.idx[i]])
+            distortion += Calculator.calDistance(self.m_order[i], self.centroids[self.idx[i]])
         return distortion
 
     def refine(self):
@@ -128,12 +128,11 @@ class balanced_kmeans(kmeans):
 
         while True:
             numCluster = [len(clusterList[i]) for i in range(n_clusters)]
-            print(numCluster)
+            #print(numCluster)
 
             for clusterIdx in range(n_clusters):
                 if numCluster[clusterIdx] > minVolume:
                     for j in range(numCluster[clusterIdx]):
-
                         if j >= len(clusterList[i]): break
                         instanceIdx = clusterList[clusterIdx][j]
                         bestIndex = self.findNearestCentroid(m_orders[instanceIdx], centroids)
@@ -147,11 +146,10 @@ class balanced_kmeans(kmeans):
 
             clusterList = self.getClusters()
             numCluster = [len(clusterList[i]) for i in range(n_clusters)]
-            print(numCluster)
+            #print(numCluster)
             newCentroids = self.updateCentroids_Refine(m_orders, clusterList)
-
-            print('Objective value after refining:', calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
-            print('obj',self.total_obj())
+            print('Objective value after refining:', Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
+            #print('obj',self.total_obj())
             if np.linalg.norm(centroids - newCentroids) <= epsilon:
                 break
             centroids = newCentroids
@@ -159,13 +157,12 @@ class balanced_kmeans(kmeans):
 
     def execute(self):
         super(balanced_kmeans,self).execute()
-        print('Objective value after populating:', calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
-
-        print('Populating...')
+        print('Objective value after populating:', Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
+        #print('Populating...')
         g = time.time()
         self.populate()
-        print('Objective value after populating:', calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
-        print('Time Used:',time.time()-g)
+        print('Objective value after populating:', Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
+        #print('Time Used:',time.time()-g)
 
         print('Refining...')
         g = time.time()

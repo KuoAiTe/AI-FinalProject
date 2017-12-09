@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 import time
-from general import *
+from general import Calculator
 
 epsilon = 0.1
 
@@ -28,7 +28,7 @@ class kmeans(object):
         self.MaxIteration = 100
         self.sampleSize = len(self.m_sample_orders)
         self.sampleIdx = np.zeros(self.sampleSize, dtype = int)
-        self.Verbose = True
+        self.Verbose = False
 
 
     def initCentroids(self):
@@ -61,7 +61,7 @@ class kmeans(object):
         for i in range(self.sampleSize):
             min_distance = 99999
             for k in range(self.n_cluster):
-                d = calDistance(self.m_sample_orders[i], self.centroids[k])
+                d = Calculator.calDistance(self.m_sample_orders[i], self.centroids[k])
                 if d < min_distance:
                     min_distance = d
                     distortion[i] = min_distance **2

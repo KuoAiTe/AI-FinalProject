@@ -4,11 +4,9 @@ Course project of COMP6600
 import math
 import random
 import pandas as pd
-from sample import sample
 from dataSet import dataSet
 from sklearn.cluster import KMeans
-from kmeans import kmeans
-
+from balanced_kmeans import balanced_kmeans
 
 # dataset preprocessing
 fileName = "./data/data.mat"
@@ -18,12 +16,6 @@ topicList = dataSet.get_topicList()
 
 # Sampling
 print('Sampleing...')
-K = 20      # number of clusters
-L = K       # proportion = 1/L
-S = 50      # at least S samples are chosen from each partition
-P = 0.9    # confidence level
-minVolume = 700
-m_sample_order, v_sampleID = sample(matrix = m_order, K = K, L = L, S = S, P = P)
 
 # Clustering
 d_location = dataSet.get_dLocation()
@@ -34,18 +26,17 @@ skuKeeping = dataSet.get_skuKeeping()
 invoiceList = dataSet.get_quantity()
 
 print("clustering...")
-km = kmeans(orders = m_sample_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location,
-            c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
+km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, d_location = d_location, nearWarehouse = nearWarehouse, n_clusters = 20)
 km.execute()
 
 
 #print(km.idx)
+
 clusterList = km.getClusters()
 centroidList = km.getCentroids()
 idx = km.getIdx()
-idx = {'SampleID':v_sampleID,'idx':idx}
 
-columns=['Storage %d' % i for i in range(len(m_sample_order[0]) - 2)]
+columns=['Storage %d' % i for i in range(len(m_order[0]) - 2)]
 columns+= ['Longitude','Latitude']
 df = pd.DataFrame(data=centroidList,columns=columns)
 df.index.name = 'DC#'
@@ -55,10 +46,8 @@ df = pd.DataFrame(data=clusterList)
 df.index.name = 'Cluster#'
 df.to_csv('./result/cluster.csv')
 df = pd.DataFrame(data=idx)
-df.index.name = 'Sample#'
+df.index.name = 'idx#'
 df.to_csv('./result/idx.csv')
-#print(clusterList)
-
 
 # with open('centroid.txt', 'w') as f:
 #     for i in range(len(centroidList)):

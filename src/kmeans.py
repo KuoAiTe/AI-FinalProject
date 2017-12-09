@@ -4,7 +4,7 @@ import random
 import time
 from general import *
 
-epsilon = 0.1
+epsilon = 0.01
 
 class kmeans():
     '''

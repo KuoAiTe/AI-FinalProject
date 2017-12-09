@@ -8,8 +8,6 @@ from sample import sample
 from dataSet import dataSet
 from sklearn.cluster import KMeans
 from kmeans import kmeans
-from populate import populating
-from refine import refining
 
 
 # dataset preprocessing
@@ -49,20 +47,16 @@ idx = {'SampleID':v_sampleID,'idx':idx}
 
 columns=['Storage %d' % i for i in range(len(m_sample_order[0]) - 2)]
 columns+= ['Longitude','Latitude']
-print('centroidsList')
 df = pd.DataFrame(data=centroidList,columns=columns)
 df.index.name = 'DC#'
 df.to_csv('./result/centroids.csv')
-print('a')
 # Save Centroids
 df = pd.DataFrame(data=clusterList)
 df.index.name = 'Cluster#'
 df.to_csv('./result/cluster.csv')
-print('b')
 df = pd.DataFrame(data=idx)
 df.index.name = 'Sample#'
 df.to_csv('./result/idx.csv')
-print('c')
 #print(clusterList)
 
 

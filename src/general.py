@@ -13,12 +13,10 @@ def calDistance(point1, point2):
     Point should be a list with format: wh1, wh2, ..., whM, location_x, location_y.
     Similarity of items should be weighted by ALPHA, and that of location should be weighted by BEAT.
     '''
-    n_feature = len(point1)
-    splitting = n_feature - 2
-    front_point1 = point1[:splitting]
-    back_point1 = point1[splitting:n_feature]
-    front_point2 = point2[:splitting]
-    back_point2 = point2[splitting:n_feature]
+    front_point1 = point1[:-2]
+    back_point1 = point1[-2:]
+    front_point2 = point2[:-2]
+    back_point2 = point2[-2:]
     d1 = np.linalg.norm(front_point1 - front_point2)
     d2 = np.linalg.norm(back_point1 - back_point2)
     d = ALPHA * d1 + BETA * d2

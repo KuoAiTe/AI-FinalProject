@@ -76,7 +76,7 @@ class kmeans(object):
             numCluster[self.sampleIdx[i]] += 1
             newCentroids[self.sampleIdx[i]] += self.m_sample_orders[i]
         for i in range(self.n_cluster):
-                newCentroids[i] /= numCluster[i]
+                newCentroids[i] /= max(numCluster[i],1)
         self.centroids = newCentroids
     '''
     def total_distance(self):

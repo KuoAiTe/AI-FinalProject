@@ -10,7 +10,7 @@ class Calculator:
     ALPHA = 0.5
     BETA = 0.5
     @staticmethod
-    def setPortion(i):
+    def setAlpha(i):
         Calculator.ALPHA = i
         Calculator.BETA = 1-i
     @staticmethod
@@ -47,8 +47,8 @@ class Calculator:
         num_customer = len(c_location)
         travelDist_dw = 0
         travelDist_dc = 0
-        c1 = 1.0
-        c2 = 2.0
+        c1 = 2.0
+        c2 = 1.0
         cost = 0
         for i in range(num_order):
             totQuantity = 0

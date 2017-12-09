@@ -4,13 +4,13 @@ from general import Calculator
 import time
 import numpy as np
 class balanced_kmeans(kmeans):
-    def __init__(self, m_order, quantityTopic, quantityInvoice, w_location, d_location, c_location, nearWarehouse, n_clusters):
+    def __init__(self, m_order, quantityTopic, quantityInvoice, w_location, d_location, c_location, nearWarehouse, n_clusters,minVolume):
         self.m_order = m_order
         self.dataSize = len(self.m_order)
         self.idx = np.zeros(self.dataSize, dtype = int)
         self.w_location = w_location
         self.c_location = c_location
-        self.minVolume = 800
+        self.minVolume = minVolume
         K = 20      # number of clusters
         L = K       # proportion = 1/L
         S = 50      # at least S samples are chosen from each partition
@@ -119,7 +119,7 @@ class balanced_kmeans(kmeans):
             output:
                 clusterList: new clusters after refining
         '''
-        epsilon = 0.01
+        epsilon = 0.1
         n_clusters = self.n_cluster
         m_orders = self.m_order
         minVolume = self.minVolume
@@ -133,7 +133,7 @@ class balanced_kmeans(kmeans):
             for clusterIdx in range(n_clusters):
                 if numCluster[clusterIdx] > minVolume:
                     for j in range(numCluster[clusterIdx]):
-                        if j >= len(clusterList[i]): break
+                        if j >= len(clusterList[clusterIdx]): break
                         instanceIdx = clusterList[clusterIdx][j]
                         bestIndex = self.findNearestCentroid(m_orders[instanceIdx], centroids)
                         if clusterIdx != bestIndex:
@@ -157,14 +157,8 @@ class balanced_kmeans(kmeans):
 
     def execute(self):
         super(balanced_kmeans,self).execute()
-        print('Objective value after populating:', Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
-        #print('Populating...')
         g = time.time()
         self.populate()
-        print('Objective value after populating:', Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx))
-        #print('Time Used:',time.time()-g)
-
-        print('Refining...')
-        g = time.time()
         self.refine()
-        print('Time Used:',time.time()-g)
+        objValue = Calculator.calObjective(self.quantityTopic, self.quantityInvoice, self.w_location, self.d_location, self.c_location, self.idx)
+        return objValue

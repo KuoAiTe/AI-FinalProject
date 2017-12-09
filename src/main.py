@@ -1,23 +1,20 @@
-"""
-Course project of COMP6600
-"""
+# -*- coding: utf-8 -*-
 import math
 import random
 import pandas as pd
+import matplotlib.pyplot as plt
+import sys
 from general import Calculator
 from dataSet import dataSet
 from sklearn.cluster import KMeans
 from balanced_kmeans import balanced_kmeans
+reload(sys)
+sys.setdefaultencoding('utf8')
 
-# dataset preprocessing
 fileName = "./data/data.mat"
 dataSet = dataSet(fileName)
-m_order = dataSet.get_order()       # m_order is sparse matrix
+m_order = dataSet.get_order()
 topicList = dataSet.get_topicList()
-# Sampling
-print('Sampleing...')
-global ALPHA,BETA
-# Clustering
 d_location = dataSet.get_dLocation()
 w_location = dataSet.get_wLocation()
 c_location = dataSet.get_cLocation()
@@ -25,17 +22,24 @@ nearWarehouse = dataSet.get_sortedDistanceIndex()
 skuKeeping = dataSet.get_skuKeeping()
 invoiceList = dataSet.get_quantity()
 
-print("clustering...")
-for i in range(0,101):
-    Calculator.setPortion(1.0*i/100)
-    print('ALPHA',Calculator.ALPHA)
-    print('BETA',Calculator.BETA)
-    km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
-    km.execute()
+_alpha = [i*0.01 for i in range(101)]
 
+for minVolume in [500,600,700,800]:
+    _obj = []
+    for alpha in _alpha:
+        Calculator.setAlpha(alpha)
+        km = balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20,minVolume = minVolume)
+        objValue = km.execute()
+        _obj.append(objValue)
+        print('m =%d | α: %f Cost:%f' % (minVolume,alpha,objValue))
+    plt.plot(_alpha,_obj, label='m = %d' % minVolume)
+plt.xlim((0, 1))
+plt.xlabel('α')
+plt.ylabel('Cost')
+plt.legend()
+plt.show()
 
-#print(km.idx)
-
+'''
 clusterList = km.getClusters()
 centroidList = km.getCentroids()
 idx = km.getIdx()
@@ -52,29 +56,4 @@ df.to_csv('./result/cluster.csv')
 df = pd.DataFrame(data=idx)
 df.index.name = 'idx#'
 df.to_csv('./result/idx.csv')
-#------------------------------------------------------------------------
-'''
-f = open('centroid.txt')
-m_centroids = []
-for each in f:
-    m_centroids.append(int(each))
-f.close()
-f = open('idx.txt')
-idx = []
-for each in f:
-    idx.append(int(each))
-f.close()
-l_clusters = []
-for j in range(len(m_centroids)):
-    l_clusters.append([])
-for i in range(len(m_order)):
-    l_clusters[idx[i]].append(i)
-'''
-#------------------------------------------------------------------------
-
-# Populating and Refining
-# clusterList = populating(clusterList)
-# clusterList = refining(m_orders = m_order, l_clusters = clusterList, m_centroids = centroidList, minVolume = minVolume)
-'''print('Refining...')
-clusterList = refining(m_orders = m_order, l_clusters = l_clusters, m_centroids = m_centroids, minVolume = minVolume)
 '''

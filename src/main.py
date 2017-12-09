@@ -13,7 +13,6 @@ fileName = "./data/data.mat"
 dataSet = dataSet(fileName)
 m_order = dataSet.get_order()       # m_order is sparse matrix
 topicList = dataSet.get_topicList()
-
 # Sampling
 print('Sampleing...')
 
@@ -26,7 +25,7 @@ skuKeeping = dataSet.get_skuKeeping()
 invoiceList = dataSet.get_quantity()
 
 print("clustering...")
-km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, d_location = d_location, nearWarehouse = nearWarehouse, n_clusters = 20)
+km =balanced_kmeans(m_order = m_order, quantityTopic = topicList, quantityInvoice = invoiceList, w_location = w_location, d_location = d_location, c_location = c_location, nearWarehouse = nearWarehouse, n_clusters = 20)
 km.execute()
 
 
@@ -48,25 +47,6 @@ df.to_csv('./result/cluster.csv')
 df = pd.DataFrame(data=idx)
 df.index.name = 'idx#'
 df.to_csv('./result/idx.csv')
-
-# with open('centroid.txt', 'w') as f:
-#     for i in range(len(centroidList)):
-#         f.write(str(centroidList[i]) + '\n')
-#     f.close()
-# with open('idx.txt', 'w') as f:
-#     for i in range(len(idx)):
-#         f.write(str(idx[i]) + '\n')
-#     f.close()
-# with open('sampleID.txt', 'w') as f:
-#     for i in range(len(v_sampleID)):
-#         f.write(str(v_sampleID[i]) + '\n')
-#     f.close()
-# with open('sampleID.txt', 'w') as f:
-#     for i in range(len(v_sampleID)):
-#         f.write(str(v_sampleID[i]) + '\n')
-#     f.close()
-
-
 #------------------------------------------------------------------------
 '''
 f = open('centroid.txt')

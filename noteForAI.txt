@@ -1,0 +1,6 @@
+InvoiceNo 0~16648
+CustomerID 0~3920
+StockCode 0~3644
+quantity 1~80995
+
+InvoiceNo == points:
